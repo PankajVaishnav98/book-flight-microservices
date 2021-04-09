@@ -1,0 +1,63 @@
+package com.mindtree.learning.userdetails.service.impl;
+
+import java.util.List;
+
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+import com.mindtree.learning.userdetails.repository.UserDetailsRepo;
+import com.mindtree.learning.userdetails.model.User;
+import com.mindtree.learning.userdetails.service.UserService;
+
+import lombok.Value;
+
+@Service
+public class UserServiceImpl implements UserService{
+
+	@Autowired
+	private UserDetailsRepo ur;
+	
+	org.jboss.logging.Logger logger = LoggerFactory.logger(UserServiceImpl.class);
+
+	
+	@Override
+	public User addUser(User user) {
+		return ur.save(user);
+	}
+
+	@Override
+	@CacheEvict(value = "user-Id-cache", key = "#uId")
+	public String deleteUser(int uId) throws Exception {
+		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
+		ur.delete(user);
+		return "User : " + user.getName() + " Deleted Successfully";
+	}
+
+	@Override
+	@CachePut(value = "user-Id-cache", key = "#uId")
+	public User updateName(int uId, String newName) throws Exception {
+		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
+		user.setName(newName);
+		user = ur.save(user);
+		return user;
+	}
+
+	@Override
+	@Cacheable(value = "user-Id-cache", key = "#uId", condition = "True", unless = "#result=null")
+	public User getUserById(int uId) throws Exception {
+		logger.info("Dealing with Db");
+		Thread.sleep(1000);
+		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
+		return user;
+	}
+	
+	@Override
+	public List<User> getUsers() {
+		return ur.findAll();
+	}
+
+}
