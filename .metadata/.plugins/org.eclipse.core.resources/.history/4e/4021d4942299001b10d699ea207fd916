@@ -1,0 +1,168 @@
+package com.mindtree.learning.flightdetails.model;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Flight {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int fId;
+
+	private String name;
+
+	private int totalNoOfSeats;
+
+	private int noOfFirstClassSeats;
+
+	private double priceFirstClass;
+
+	private int noOfEconomyClassSeats;
+
+	private double priceEconomyClass;
+
+	private int noOfBusinessClassSeats;
+
+	private double priceBusinessClass;
+
+	private String source;
+
+	private String destination;
+
+	private Date dateOfDeparture;
+
+	private Timestamp estimatedDepartureTime;
+
+	public Flight() {
+		super();
+	}
+
+	public Flight(String name, int totalNoOfSeats, int noOfFirstClassSeats, double priceFirstClass,
+			int noOfEconomyClassSeats, double priceEconomyClass, int noOfBusinessClassSeats, double priceBusinessClass,
+			String source, String destination, Date dateOfDeparture, Timestamp estimatedDepartureTime) {
+		super();
+		this.name = name;
+		this.totalNoOfSeats = totalNoOfSeats;
+		this.noOfFirstClassSeats = noOfFirstClassSeats;
+		this.priceFirstClass = priceFirstClass;
+		this.noOfEconomyClassSeats = noOfEconomyClassSeats;
+		this.priceEconomyClass = priceEconomyClass;
+		this.noOfBusinessClassSeats = noOfBusinessClassSeats;
+		this.priceBusinessClass = priceBusinessClass;
+		this.source = source;
+		this.destination = destination;
+		this.dateOfDeparture = dateOfDeparture;
+		this.setEstimatedDepartureTime(estimatedDepartureTime);
+	}
+
+	public int getfId() {
+		return fId;
+	}
+
+	public void setfId(int fId) {
+		this.fId = fId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public Date getDateOfDeparture() {
+		return dateOfDeparture;
+	}
+
+	public void setDateOfDeparture(Date dateOfDeparture) {
+		this.dateOfDeparture = dateOfDeparture;
+	}
+
+	public int getTotalNoOfSeats() {
+		return totalNoOfSeats;
+	}
+
+	public void setTotalNoOfSeats(int totalNoOfSeats) {
+		this.totalNoOfSeats = totalNoOfSeats;
+	}
+
+	public int getNoOfFirstClassSeats() {
+		return noOfFirstClassSeats;
+	}
+
+	public void setNoOfFirstClassSeats(int noOfFirstClassSeats) {
+		this.noOfFirstClassSeats = noOfFirstClassSeats;
+	}
+
+	public int getNoOfEconomyClassSeats() {
+		return noOfEconomyClassSeats;
+	}
+
+	public void setNoOfEconomyClassSeats(int noOfEconomyClassSeats) {
+		this.noOfEconomyClassSeats = noOfEconomyClassSeats;
+	}
+
+	public int getNoOfBusinessClassSeats() {
+		return noOfBusinessClassSeats;
+	}
+
+	public void setNoOfBusinessClassSeats(int noOfBusinessClassSeats) {
+		this.noOfBusinessClassSeats = noOfBusinessClassSeats;
+	}
+
+	public double getPriceFirstClass() {
+		return priceFirstClass;
+	}
+
+	public void setPriceFirstClass(double priceFirstClass) {
+		this.priceFirstClass = priceFirstClass;
+	}
+
+	public double getPriceEconomyClass() {
+		return priceEconomyClass;
+	}
+
+	public void setPriceEconomyClass(double priceEconomyClass) {
+		this.priceEconomyClass = priceEconomyClass;
+	}
+
+	public double getPriceBusinessClass() {
+		return priceBusinessClass;
+	}
+
+	public void setPriceBusinessClass(double priceBusinessClass) {
+		this.priceBusinessClass = priceBusinessClass;
+	}
+
+	public Timestamp getEstimatedDepartureTime() {
+		return estimatedDepartureTime;
+	}
+
+	public void setEstimatedDepartureTime(Timestamp estimatedDepartureTime) {
+		this.estimatedDepartureTime = estimatedDepartureTime;
+	}
+
+}

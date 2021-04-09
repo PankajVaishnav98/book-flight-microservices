@@ -20,6 +20,10 @@ public class BookFlight {
 	private int bId;
 	private int uId;
 	private int fId;
+	private int seatNo;
+	private String seatType;
+	private double farePrice;
+	
 
 	public int getbId() {
 		return bId;
@@ -40,6 +44,30 @@ public class BookFlight {
 	}
 	public void setfId(int fId) {
 		this.fId = fId;
+	}
+
+	public int getSeatNo() {
+		return seatNo;
+	}
+
+	public void setSeatNo(int seatNo) {
+		this.seatNo = seatNo;
+	}
+
+	public String getSeatType() {
+		return seatType;
+	}
+
+	public void setSeatType(String seatType) {
+		this.seatType = seatType;
+	}
+
+	public double getFarePrice() {
+		return farePrice;
+	}
+
+	public void setFarePrice(double farePrice) {
+		this.farePrice = farePrice;
 	}
 	
 	

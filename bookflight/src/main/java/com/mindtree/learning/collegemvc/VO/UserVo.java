@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class UserVo {
 	private int bookingId;
 	private User user;
-	private Flight flight;
+	private FlightDto flight;
 
 	public int getBookingId() {
 		return bookingId;
@@ -29,11 +29,11 @@ public class UserVo {
 		this.user = user;
 	}
 
-	public Flight getFlight() {
+	public FlightDto getFlight() {
 		return flight;
 	}
 
-	public void setFlight(Flight flight) {
+	public void setFlight(FlightDto flight) {
 		this.flight = flight;
 	}
 

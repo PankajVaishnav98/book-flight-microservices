@@ -1,5 +1,7 @@
 package com.mindtree.learning.flightdetails.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +56,17 @@ public class FlightServiceImpl implements FlightService{
 	public Flight getFlightDetails(int fId) throws Exception {
 
 		return fr.findById(fId).orElseThrow(()-> new Exception("No Such Flight Id Exist"));
+	}
+
+	@Override
+	public List<Flight> getAllFlights() {
+		return fr.findAll();
+	}
+
+	@Override
+	public List<Flight> searchFlights(String source, String destination) throws Exception {
+		
+		return fr.searchFlights(source, destination);
 	}
 
 }

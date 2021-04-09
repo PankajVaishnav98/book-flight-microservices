@@ -1,0 +1,5 @@
+package com.mindtree.learning.flightdetails.model;
+
+public class Airport {
+
+}

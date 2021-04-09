@@ -1,0 +1,90 @@
+package com.mindtree.learning.flightdetails.model;
+
+import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+public class Flight {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int fId;
+
+	private String name;
+
+	private String source;
+
+	private String destination;
+
+	private Date dateOfDeparture;
+	
+	private Date dateOfArrival;
+
+	public Flight() {
+		super();
+	}
+
+
+	public Flight(String name, String source, String destination, Date dateOfDeparture, Date dateOfArrival) {
+		super();
+		this.name = name;
+		this.source = source;
+		this.destination = destination;
+		this.dateOfDeparture = dateOfDeparture;
+		this.dateOfArrival = dateOfArrival;
+	}
+
+
+	public int getfId() {
+		return fId;
+	}
+
+	public void setfId(int fId) {
+		this.fId = fId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+	public Date getDateOfDeparture() {
+		return dateOfDeparture;
+	}
+
+	public void setDateOfDeparture(Date dateOfDeparture) {
+		this.dateOfDeparture = dateOfDeparture;
+	}
+
+	public Date getDateOfArrival() {
+		return dateOfArrival;
+	}
+
+	public void setDateOfArrival(Date dateOfArrival) {
+		this.dateOfArrival = dateOfArrival;
+	}
+
+}

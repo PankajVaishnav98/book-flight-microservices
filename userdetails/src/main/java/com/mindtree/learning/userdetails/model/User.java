@@ -18,10 +18,10 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int uId;
-	
 	private String name;
 	private int age;
 	private String gender;
+	private String password;
 
 
 	public int getuId() {
@@ -54,6 +54,14 @@ public class User {
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}	
 	
 	

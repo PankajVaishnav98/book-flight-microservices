@@ -1,5 +1,7 @@
 package com.mindtree.learning.flightdetails.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,16 @@ public class FlightController {
 		return fs.getFlightDetails(fId);
 	}
 	
+	@RequestMapping("/getAllFlights")
+	public List<Flight> getAllFlights(){
+		return fs.getAllFlights();
+	}
+	
+	@RequestMapping("/searchFlights/{source}/{destination}")
+	public List<Flight> searchFlights(@PathVariable("source") String source,@PathVariable("destination") String destination) throws Exception{
+		return fs.searchFlights(source,destination);
+	}
+	
 	@RequestMapping("/add")
 	public Flight addFlight(@RequestBody Flight flight) {
 		return fs.addFlight(flight);
@@ -30,6 +42,11 @@ public class FlightController {
 	@RequestMapping("/delete/{fId}")
 	public String deleteFlight(@PathVariable int fId) throws Exception{
 		return fs.deleteFlight(fId);
+	}
+	
+	@RequestMapping("/updateFlight")
+	public void updateFlight(@RequestBody Flight flight) {
+		fs.addFlight(flight);
 	}
 	
 	@RequestMapping("/update-source/{fId}/{newSource}")

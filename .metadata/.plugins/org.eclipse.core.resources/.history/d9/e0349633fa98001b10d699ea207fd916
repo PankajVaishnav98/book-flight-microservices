@@ -1,0 +1,47 @@
+package com.mindtree.learning.userdetails.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mindtree.learning.userdetails.model.User;
+import com.mindtree.learning.userdetails.service.UserService;
+import com.mindtree.learning.userdetails.service.impl.UserServiceImpl;
+
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+	@Autowired
+	private UserService us = new UserServiceImpl();
+
+	
+	@RequestMapping("/get/{uId}/{password}")
+	public User getUser(@PathVariable int uId,@PathVariable String password) throws Exception {
+		return us.getUserById(uId,password);
+	}
+
+	@RequestMapping("/getall")
+	public List<User> getAllUser() throws Exception {
+		return us.getUsers();
+	}
+	
+	@RequestMapping("/add")
+	public User addUser(@RequestBody User user) {
+		return us.addUser(user);
+	}
+	
+	@RequestMapping("/delete/{uId}")
+	public String deleteUserById(@PathVariable int uId) throws Exception{
+		return us.deleteUser(uId);
+	}
+	
+	@RequestMapping("/update-name/{uId}/{newName}")
+	public User updateNameById(@PathVariable int uId, @PathVariable String newName) throws Exception{
+		return us.updateName(uId, newName);
+	}
+}

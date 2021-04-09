@@ -1,5 +1,7 @@
 package com.mindtree.learning.flightdetails.service;
 
+import java.util.List;
+
 import com.mindtree.learning.flightdetails.model.Flight;
 
 public interface FlightService {
@@ -10,5 +12,7 @@ public interface FlightService {
 	public Flight updateFlightSource(int fId, String newSource) throws Exception;
 	public Flight updateFlightDestination(int fId, String newDestination) throws Exception;
 	public Flight updateFlightName(int fId, String newName) throws Exception;
+	public List<Flight> getAllFlights();
+	public List<Flight> searchFlights(String source, String destination) throws Exception;
 	
 }

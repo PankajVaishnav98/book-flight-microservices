@@ -1,0 +1,153 @@
+package com.mindtree.learning.collegemvc.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.mindtree.learning.collegemvc.repository.*;
+import com.mindtree.learning.collegemvc.VO.UserVo;
+import com.mindtree.learning.collegemvc.client.FlightClient;
+import com.mindtree.learning.collegemvc.client.UserClient;
+import com.mindtree.learning.collegemvc.model.BookFlight;
+import com.mindtree.learning.collegemvc.VO.Flight;
+import com.mindtree.learning.collegemvc.VO.FlightDto;
+import com.mindtree.learning.collegemvc.VO.User;
+import com.mindtree.learning.collegemvc.service.BookFlightService;
+
+@Service
+public class BookFlightImpl implements BookFlightService {
+
+	@Autowired
+	private BookFlightRepo fr;
+
+	@Autowired
+	private UserClient userClient;
+
+	@Autowired
+	private FlightClient flightClient;
+
+	static ModelMapper mapper = new ModelMapper();
+
+	/*
+	 * @Autowired private RestTemplate resttemplate;
+	 */
+
+	@Override
+	public UserVo bookFlight(int uId, int fId, String seatType) throws Exception {
+		UserVo vo = new UserVo();
+		// Flight flight =
+		// resttemplate.getForObject("http://ZUULSERVICE/app/flights/flight/getdetails/"
+		// + fId,Flight.class);
+		// User user =
+		// resttemplate.getForObject("http://ZUULSERVICE/app/users/user/get/" + uId,
+		// User.class);
+		Flight flight = flightClient.getFlight(fId);
+		FlightDto flightDto = mapper.map(flight, FlightDto.class);
+		if (seatType.equalsIgnoreCase("business")) {
+			checkAvailability(flight.getAvaialbleNoOfBusinessClassSeats());
+			flightDto.setFarePrice(flight.getPriceBusinessClass());
+			int seatNo = flight.getTotalNoOfSeats()-flight.getTotalNoOfBusinessClassSeats()+(flight.getTotalNoOfBusinessClassSeats()-flight.getAvaialbleNoOfBusinessClassSeats())+1;
+			flightDto.setSeatNo(seatNo);
+			flight.setAvaialbleNoOfBusinessClassSeats(flight.getAvaialbleNoOfBusinessClassSeats() - 1);
+			flightClient.updateFlightWithSeats(flight);
+			
+		} else if (seatType.equalsIgnoreCase("economy")) {
+			checkAvailability(flight.getAvailableNoOfEconomyClassSeats());
+			flightDto.setFarePrice(flight.getPriceEconomyClass());
+			int seatNo = flight.getTotalNoOfSeats()-flight.getTotalNoOfBusinessClassSeats()-flight.getTotalNoOfEconomyClassSeats()+(flight.getTotalNoOfEconomyClassSeats()-flight.getAvailableNoOfEconomyClassSeats())+1;
+			flightDto.setSeatNo(seatNo);
+			flight.setAvailableNoOfEconomyClassSeats(flight.getAvailableNoOfEconomyClassSeats() - 1);
+			flightClient.updateFlight(flight);
+
+		} else if (seatType.equalsIgnoreCase("firstclass")) {
+			checkAvailability(flight.getAvailableNoOfFirstClassSeats());
+			flightDto.setFarePrice(flight.getPriceFirstClass());
+			int seatNo = flight.getTotalNoOfSeats()-flight.getTotalNoOfBusinessClassSeats()-flight.getTotalNoOfEconomyClassSeats()-flight.getTottalNoOfFirstClassSeats() +(flight.getTottalNoOfFirstClassSeats()-flight.getAvailableNoOfFirstClassSeats())+1;
+			flightDto.setSeatNo(seatNo);
+			flight.setAvailableNoOfFirstClassSeats(flight.getAvailableNoOfFirstClassSeats() - 1);
+			flightClient.updateFlight(flight);
+
+		} else {
+			throw new Exception("No such class for seat");
+		}
+		
+		User user = userClient.getUsers(uId);
+
+		vo.setUser(user);
+		vo.setFlight(flightDto);
+		BookFlight booking = new BookFlight();
+		booking.setfId(fId);
+		booking.setuId(uId);
+		booking.setSeatNo(flightDto.getSeatNo());
+		booking.setSeatType(flightDto.getSeatType());
+		booking.setFarePrice(flightDto.getFarePrice());
+		booking = fr.save(booking);
+		vo.setBookingId(booking.getbId());
+		return vo;
+	}
+
+	private void checkAvailability(int noOfClassSeats) throws Exception {
+
+		if (noOfClassSeats == 0) {
+			throw new Exception("seats for this class not available");
+		}
+	}
+
+	@Override
+	public Map<String, Object> getAllUsers(int fId) {
+		// Flight flight =
+		// resttemplate.getForObject("http://ZUULSERVICE/app/flights/flight/getdetails/"
+		// + fId,Flight.class);
+		Flight flight = flightClient.getFlight(fId);
+		Map<String, Object> flightdata = new HashMap<>();
+		flightdata.put("flight", flight);
+		List<Integer> uIds = fr.getUids(fId);
+		List<User> users = uIds.stream().map(uId -> {
+			// User u = resttemplate.getForObject("http://ZUULSERVICE/app/users/user/get/" +
+			// uId, User.class);
+			User u = userClient.getUsers(uId);
+
+			return u;
+		}).collect(Collectors.toList());
+
+		flightdata.put("passangers", users);
+
+		return flightdata;
+	}
+
+	@Override
+	public String cancelBooking(int bId) throws Exception {
+		BookFlight booking = fr.findById(bId).orElseThrow(() -> new Exception("NO Such booking Id is there"));
+		Flight flight = flightClient.getFlight(booking.getfId());
+		if (booking.getSeatType().equalsIgnoreCase("business")) {
+			flight.setAvaialbleNoOfBusinessClassSeats(flight.getAvaialbleNoOfBusinessClassSeats()+1);
+		}
+		else if (booking.getSeatType().equalsIgnoreCase("economy")) {
+			flight.setAvailableNoOfEconomyClassSeats(flight.getAvailableNoOfEconomyClassSeats()+1);
+		}
+		else {
+			flight.setAvailableNoOfFirstClassSeats(flight.getAvailableNoOfFirstClassSeats()+1);
+		}
+		flightClient.updateFlight(flight);
+		fr.delete(booking);
+		return "Booking canceld Successfully";
+	}
+
+	@Override
+	public List<Flight> searchFlights(String source, String destination) {
+		List<Flight> flights = flightClient.searchFlights(source, destination);
+		return flights;
+	}
+
+	@Override
+	public List<FlightDto> yourBookings(int uId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

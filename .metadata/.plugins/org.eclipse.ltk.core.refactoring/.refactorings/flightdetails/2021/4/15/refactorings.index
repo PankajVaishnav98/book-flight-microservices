@@ -1,0 +1,7 @@
+1617949072489	Encapsulate field 'dateOfDeparture'
+1617949077206	Encapsulate field 'dateOfArrival'
+1617949331581	Encapsulate field 'totalNoOfSeats'
+1617949335690	Encapsulate field 'noOfFirstClassSeats'
+1617949339785	Encapsulate field 'noOfEconomyClassSeats'
+1617949344008	Encapsulate field 'noOfBusinessClassSeats'
+1617949812723	Encapsulate field 'estimatedDepartureTime'

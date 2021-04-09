@@ -1,0 +1,32 @@
+package com.mindtree.learning.collegemvc.VO;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class FlightDto {
+	
+	private int fId;
+
+	private String name;
+	
+	private int seatNo;
+
+	private String source;
+
+	private String destination;
+
+	private Date dateOfDeparture;
+
+	private Timestamp estimatedDepartureTime;
+
+	
+
+
+}

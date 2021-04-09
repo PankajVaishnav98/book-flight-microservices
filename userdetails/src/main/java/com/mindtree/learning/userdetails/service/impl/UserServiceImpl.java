@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	@CacheEvict(value = "user-Id-cache", key = "#uId")
 	public String deleteUser(int uId) throws Exception {
 		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
 		ur.delete(user);
@@ -38,7 +37,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	@CachePut(value = "user-Id-cache", key = "#uId")
 	public User updateName(int uId, String newName) throws Exception {
 		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
 		user.setName(newName);
@@ -47,10 +45,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	@Cacheable(value = "user-Id-cache", key = "#uId", condition = "True", unless = "#result=null")
 	public User getUserById(int uId) throws Exception {
-		logger.info("Dealing with Db");
-		Thread.sleep(1000);
 		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
 		return user;
 	}
