@@ -1,47 +1,80 @@
 package com.mindtree.learning.userdetails.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mindtree.learning.userdetails.exception.ControllerException.ControllerException;
+import com.mindtree.learning.userdetails.exception.ServiceException.ServiceException;
 import com.mindtree.learning.userdetails.model.User;
 import com.mindtree.learning.userdetails.service.UserService;
 import com.mindtree.learning.userdetails.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/user")
+@RefreshScope
 public class UserController {
 
 	@Autowired
 	private UserService us = new UserServiceImpl();
 
+
+	@Value("${my.greeting}")
+	private String msg;
+	
+	@RequestMapping("/property")
+	public String getProperty() {
+		return msg;
+	}
 	
 	@RequestMapping("/get/{uId}")
-	public User getUser(@PathVariable int uId) throws Exception {
-		return us.getUserById(uId);
+	public ResponseEntity<?> getUser(@PathVariable int uId) throws ControllerException {
+		try {
+		return ResponseEntity.ok().body(us.getUserById(uId));
+		}catch(ServiceException e) {
+			throw new ControllerException(e.getMessage());
+		}
 	}
 
 	@RequestMapping("/getall")
-	public List<User> getAllUser() throws Exception {
-		return us.getUsers();
+	public ResponseEntity<?> getAllUser() throws ControllerException {
+		try {
+		return ResponseEntity.ok().body(us.getUsers());
+		}catch(ServiceException e) {
+			throw new ControllerException(e.getMessage());
+		}
 	}
 	
 	@RequestMapping("/add")
-	public User addUser(@RequestBody User user) {
-		return us.addUser(user);
-	}
+	public ResponseEntity<?> addUser(@RequestBody User user) throws ControllerException{
+		try {
+		return ResponseEntity.ok().body(us.addUser(user));
+		}catch(ServiceException e) {
+			throw new ControllerException(e.getMessage());
+		}
+		}
 	
 	@RequestMapping("/delete/{uId}")
-	public String deleteUserById(@PathVariable int uId) throws Exception{
-		return us.deleteUser(uId);
+	public ResponseEntity<?> deleteUserById(@PathVariable int uId) throws ControllerException{
+		try {
+		return ResponseEntity.ok().body(us.deleteUser(uId));
+		}catch(ServiceException e) {
+			throw new ControllerException(e.getMessage());
+		}
 	}
 	
 	@RequestMapping("/update-name/{uId}/{newName}")
-	public User updateNameById(@PathVariable int uId, @PathVariable String newName) throws Exception{
-		return us.updateName(uId, newName);
+	public ResponseEntity<?> updateNameById(@PathVariable int uId, @PathVariable String newName) throws ControllerException{
+		try {
+		return ResponseEntity.ok().body(us.updateName(uId, newName));
+		}catch(ServiceException e) {
+			throw new ControllerException(e.getMessage());
+		}
 	}
 }

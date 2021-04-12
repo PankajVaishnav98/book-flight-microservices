@@ -4,16 +4,15 @@ import java.util.List;
 
 import org.hibernate.annotations.common.util.impl.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.mindtree.learning.userdetails.repository.UserDetailsRepo;
+import com.mindtree.learning.userdetails.exception.ServiceException.ServiceException;
 import com.mindtree.learning.userdetails.model.User;
 import com.mindtree.learning.userdetails.service.UserService;
 
-import lombok.Value;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -25,34 +24,60 @@ public class UserServiceImpl implements UserService{
 
 	
 	@Override
-	public User addUser(User user) {
+	public User addUser(User user) throws ServiceException{
+		try {
 		return ur.save(user);
+		}catch (DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}
 	}
 
 	@Override
-	public String deleteUser(int uId) throws Exception {
-		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
+	public String deleteUser(int uId)throws ServiceException{
+		User user = null;
+		try {
+			user = ur.findById(uId).orElse(null);
+		//user = ur.findById(uId).orElseThrow(()-> new ServiceException("No Such User Id Exist"));
 		ur.delete(user);
+		}catch (DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}
 		return "User : " + user.getName() + " Deleted Successfully";
 	}
 
 	@Override
-	public User updateName(int uId, String newName) throws Exception {
-		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
+	public User updateName(int uId, String newName) throws ServiceException {
+		User user = null;
+		try {
+			user = ur.findById(uId).orElse(null);
+			//user = ur.findById(uId).orElseThrow(()-> new ServiceException("No Such User Id Exist"));
 		user.setName(newName);
 		user = ur.save(user);
+		}catch (DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}
 		return user;
 	}
 
 	@Override
-	public User getUserById(int uId) throws Exception {
-		User user = ur.findById(uId).orElseThrow(()-> new Exception("No Such User Id Exist"));
+	public User getUserById(int uId) throws ServiceException {
+		User user = null;
+		try {
+			user = ur.findById(uId).orElse(null);
+		//user = ur.findById(uId).orElseThrow(()-> new ServiceException("No Such User Id Exist"));
+		}catch (DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}
 		return user;
 	}
 	
 	@Override
-	public List<User> getUsers() {
+	public List<User> getUsers() throws ServiceException{
+		try {
 		return ur.findAll();
+		}catch (DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}
 	}
 
 }

@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Display</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	$('#submit').on('click', function(){
+		var s = $("#source").val();
+		var d = $("#destination").val();
+		console.log(s);
+		$.ajax({
+			type: 'GET',
+			url: 'http://localhost:8989/app/bookings/booking/searchFlight/' + s + '/' + d,
+			data:{},
+			dataType:'json',
+			success: function(data) {
+				var s = '<table class="table center table-striped table-hover table-condensed table-bordered">';
+				s+= '<tr class="danger"><th>Flight Id</th><th>Flight Name</th><th>availableNoOfFirstClassSeats</th><th>priceFirstClass</th><th>availableNoOfEconomyClassSeats</th><th>priceEconomyClass</th><th>avaialbleNoOfBusinessClassSeats</th><th>priceBusinessClass</th><th>source</th><th>destination</th><th>dateOfDeparture</th><th>estimatedDepartureTime</th></tr>';
+				for(var i = 0; i < data.length; i++) {
+				s += ' <tr class="success"><td>' + data[i].fId + '</td><td>' + data[i].name + '</td><td>' + data[i].availableNoOfFirstClassSeats + '</td><td>' + data[i].priceFirstClass + '</td><td>' + data[i].availableNoOfEconomyClassSeats + '</td><td>' + data[i].priceEconomyClass + '</td><td>' + data[i].avaialbleNoOfBusinessClassSeats + '</td><td>' + data[i].priceBusinessClass + '</td><td>' + data[i].source + '</td><td>' + data[i].destination + '</td><td>' + data[i].dateOfDeparture + '</td><td>' + data[i].estimatedDepartureTime + '</td></tr>';
+				}
+				s += '</table>';
+				console.log(s);
+				$("#table1").html(s);
+			},
+			error : function(data){
+             window.location.href="file:///C:/Users/pankaj/Desktop/Flight%20UI/index.html";
+	        	}
+			});
+		});
+});
+
+</script>
+<style>
+body {
+	background-image:
+		url('https://th.bing.com/th/id/R9d9362adbae44d9b9b570c96abe60791?rik=se3NLMT5WORE6A&riu=http%3a%2f%2fallpicts.in%2fdownload%2f7642%2f2016%2f03%2fAirplane_Images_with_Beautiful_Picture_of_Flight_in_Sunset-1920x1080.jpg%2f&ehk=bS564ouFxbf8Pg%2bf7pXKij1KAnqflvMTCbALeRUGojo%3d&risl=&pid=ImgRaw');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+}
+</style>
+</head>
+<body>
+
+	<div class="container" align="center">
+		<table width="100%" border="0">
+
+			<tr>
+				<td colspan="2" bgcolor="#FFA500">
+					<h1 style="font-size: 50px;" align="center">Search Flight
+						Details</h1>
+				</td>
+			</tr>
+
+
+		</table>
+		<br>
+		<table>
+
+
+
+
+
+			<div class="form-group">
+				<label for="cid">Enter Source</label> <input type="text"
+					class="form-control" placeholder="Source Name" id="source"
+					name="source"></input>
+			</div>
+            <div class="form-group">
+				<label for="cid">Enter Destination</label> <input type="text"
+					class="form-control" placeholder="Destination Name" id="destination"
+					name="destination"></input>
+			</div>
+			<button id="submit" type="submit" class="btn btn-primary">Submit</button>
+
+			
+			</div>
+
+		</table>
+		<br>
+		
+		<div id = "table1">
+		</div>
+		
+		<form align="center">
+			<a href="file:///C:/Users/pankaj/Desktop/Flight%20UI/index.html">Go Home</a><br>
+		</form>
+
+	</div>
+
+</body>
+</html>

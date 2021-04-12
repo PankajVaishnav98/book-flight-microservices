@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Display</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript">
+$(document).ready(function(){
+	
+	$('#submit').on('click', function(){
+		var cname = $("#cid").val();
+		console.log(cname);
+		$.ajax({
+			type: 'GET',
+			url: '/student/loadStudents2/' + cname,
+			data:{},
+			dataType:'json',
+			success: function(data) {
+				var s = '<table class="table center table-striped table-hover table-condensed table-bordered">';
+				s+= '<tr class="danger"><th>Student Name</th><th>Student Age</th><th>Student Gender</th><th>Student Hobbies</th><th>Update Student</th></tr>';
+				for(var i = 0; i < data.length; i++) {
+				s += ' <tr class="success"><td>' + data[i].sname + '</td><td>' + data[i].age + '</td><td>' + data[i].gender + '</td><td>' + data[i].hobbies + '</td><td><a href="/student/updateStud/'+data[i].sname+'">Update</a></td>';
+				}
+				console.log(s);
+				$("#table1").html(s);
+			},
+			error : function(data){
+             window.location.href="/student/error";
+	        	}
+			});
+		});
+});
+
+</script>
+ -->
+<style>
+body {
+	background-image:
+		url('https://th.bing.com/th/id/R9d9362adbae44d9b9b570c96abe60791?rik=se3NLMT5WORE6A&riu=http%3a%2f%2fallpicts.in%2fdownload%2f7642%2f2016%2f03%2fAirplane_Images_with_Beautiful_Picture_of_Flight_in_Sunset-1920x1080.jpg%2f&ehk=bS564ouFxbf8Pg%2bf7pXKij1KAnqflvMTCbALeRUGojo%3d&risl=&pid=ImgRaw');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+}
+</style>
+</head>
+<body>
+
+	<div class="container" align="center">
+		<table width="100%" border="0">
+
+			<tr>
+				<td colspan="2" bgcolor="#FFA500">
+					<h1 style="font-size: 50px;" align="center">Get User All Bookings</h1>
+				</td>
+			</tr>
+
+
+		</table>
+		<br>
+		<table>
+
+
+
+
+
+			<div class="form-group">
+				<label for="cid">Enter User ID</label> <input type="text"
+					class="form-control" placeholder="User ID" id="cid"
+					name="cid"></input>
+			</div>
+            
+			<button id="submit" type="submit" class="btn btn-primary">Submit</button>
+
+			
+			</div>
+
+		</table>
+		<form align="center">
+			<a href="http://localhost:8080/home/view">Go Home</a><br>
+		</form>
+
+	</div>
+
+</body>
+</html>

@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.mindtree.learning.collegemvc.repository.*;
 import com.mindtree.learning.collegemvc.VO.UserVo;
 import com.mindtree.learning.collegemvc.client.FlightClient;
 import com.mindtree.learning.collegemvc.client.UserClient;
+import com.mindtree.learning.collegemvc.exception.ServiceException.ServiceException;
 import com.mindtree.learning.collegemvc.model.BookFlight;
 import com.mindtree.learning.collegemvc.VO.Flight;
 import com.mindtree.learning.collegemvc.VO.FlightDto;
@@ -39,14 +41,10 @@ public class BookFlightImpl implements BookFlightService {
 	 */
 
 	@Override
-	public UserVo bookFlight(int uId, int fId, String seatType) throws Exception {
+	public UserVo bookFlight(int uId, int fId, String seatType) throws ServiceException {
 		UserVo vo = new UserVo();
-		// Flight flight =
-		// resttemplate.getForObject("http://ZUULSERVICE/app/flights/flight/getdetails/"
-		// + fId,Flight.class);
-		// User user =
-		// resttemplate.getForObject("http://ZUULSERVICE/app/users/user/get/" + uId,
-		// User.class);
+		
+		try {
 		Flight flight = flightClient.getFlight(fId);
 		FlightDto flightDto = mapper.map(flight, FlightDto.class);
 		if (seatType.equalsIgnoreCase("business")) {
@@ -77,10 +75,13 @@ public class BookFlightImpl implements BookFlightService {
 			flightClient.updateFlight(flight);
 
 		} else {
-			throw new Exception("No such class for seat");
+			throw new ServiceException("No such class for seat");
 		}
 		
-		User user = userClient.getUsers(uId);
+		User user = userClient.getUsers(uId).getBody();
+		if(user == null) {
+			throw new ServiceException("No such user Id exist : " + uId);
+		}
 
 		vo.setUser(user);
 		vo.setFlight(flightDto);
@@ -91,42 +92,51 @@ public class BookFlightImpl implements BookFlightService {
 		booking.setSeatType(flightDto.getSeatType());
 		booking.setFarePrice(flightDto.getFarePrice());
 		booking = fr.save(booking);
-		vo.setBookingId(booking.getbId());
+		vo.setBookingId(booking.getbId()); 
+		}catch(DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}catch(Exception e1) {
+			throw new ServiceException(e1.getMessage());
+		}
 		return vo;
 	}
 
-	private void checkAvailability(int noOfClassSeats) throws Exception {
+	private void checkAvailability(int noOfClassSeats) throws ServiceException {
 
 		if (noOfClassSeats == 0) {
-			throw new Exception("seats for this class not available");
+			throw new ServiceException("seats for this class not available");
 		}
 	}
 
 	@Override
-	public Map<String, Object> getAllUsers(int fId) {
-		// Flight flight =
-		// resttemplate.getForObject("http://ZUULSERVICE/app/flights/flight/getdetails/"
-		// + fId,Flight.class);
-		Flight flight = flightClient.getFlight(fId);
+	public Map<String, Object> getAllUsers(int fId) throws ServiceException {
 		Map<String, Object> flightdata = new HashMap<>();
+		try {
+		Flight flight = flightClient.getFlight(fId);
 		flightdata.put("flight", flight);
 		List<Integer> uIds = fr.getUids(fId);
 		List<User> users = uIds.stream().map(uId -> {
 			// User u = resttemplate.getForObject("http://ZUULSERVICE/app/users/user/get/" +
 			// uId, User.class);
-			User u = userClient.getUsers(uId);
-
+			User u = userClient.getUsers(uId).getBody();
+			
 			return u;
 		}).collect(Collectors.toList());
 
 		flightdata.put("passangers", users);
+		}catch(DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}catch(Exception e1) {
+			throw new ServiceException(e1.getMessage());
+		}
 
 		return flightdata;
 	}
 
 	@Override
-	public String cancelBooking(int bId) throws Exception {
-		BookFlight booking = fr.findById(bId).orElseThrow(() -> new Exception("NO Such booking Id is there"));
+	public String cancelBooking(int bId) throws ServiceException {
+		try {
+		BookFlight booking = fr.findById(bId).orElseThrow(() -> new ServiceException("NO Such booking Id is there"));
 		Flight flight = flightClient.getFlight(booking.getfId());
 		if (booking.getSeatType().equalsIgnoreCase("business")) {
 			flight.setAvaialbleNoOfBusinessClassSeats(flight.getAvaialbleNoOfBusinessClassSeats()+1);
@@ -139,6 +149,13 @@ public class BookFlightImpl implements BookFlightService {
 		}
 		flightClient.updateFlight(flight);
 		fr.delete(booking);
+		}catch(DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}catch(Exception e1) {
+			throw new ServiceException(e1.getMessage());
+		}
+
+		
 		return "Booking canceld Successfully";
 	}
 
@@ -149,10 +166,14 @@ public class BookFlightImpl implements BookFlightService {
 	}
 
 	@Override
-	public List<UserVo> yourBookings(int uId) throws Exception {
+	public List<UserVo> yourBookings(int uId) throws ServiceException {
 		List<UserVo> bookings = new ArrayList<UserVo>();
+		try {
 		List<BookFlight> bookedFlight =  fr.getBookings(uId);
-		User user = userClient.getUsers(uId);
+		User user = userClient.getUsers(uId).getBody();
+		if(user == null) {
+			throw new ServiceException("No such user Id exist : " + uId);
+		}
 		for (BookFlight bookFlight : bookedFlight) {
 			Flight flight = flightClient.getFlight(bookFlight.getfId());
 			FlightDto flightDto = mapper.map(flight, FlightDto.class);
@@ -162,6 +183,13 @@ public class BookFlightImpl implements BookFlightService {
 			vo.setFlight(flightDto);
 			bookings.add(vo);
 		}
+		
+		}catch(DataAccessException e) {
+			throw new ServiceException(e.getMessage());
+		}catch(Exception e1) {
+			throw new ServiceException(e1.getMessage());
+		}
+		
 		return bookings;
 	}
 

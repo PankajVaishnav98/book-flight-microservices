@@ -21,6 +21,4 @@ public interface FlightClient {
 	
 	@GetMapping("/searchFlights/{source}/{destination}")
 	List<Flight> searchFlights(@PathVariable String source,@PathVariable String destination);
-
-
 }
